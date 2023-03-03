@@ -1,8 +1,12 @@
+using Noordle.Services;
+using Noordle.Services.Implementations;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<IWordlistRepository, WordlistRepository>();
 
 var app = builder.Build();
 
