@@ -1,27 +1,24 @@
-using System.Text.RegularExpressions;
+using Noordle.Services;
 using Noordle.Services.Implementations;
 
 namespace Noordle.Test;
 
-public partial class WordlistRepositoryTest
+public class WordlistRepositoryTest
 {
+    private IWordlistRepository _repo = null!;
+    
     [SetUp]
     public void Setup()
     {
+        _repo = new WordlistRepository();
     }
 
     [Test]
-    public async Task WordlistRepository_Get_ReturnsCorrectLengthWords()
+    public void WordlistRepository_GetWordsOfLength_ReturnsCorrectLengthWords()
     {
-        var repo = new WordlistRepository();
-        var ijre = IJRegex();
-        await foreach (var word in repo.GetWordsOfLength(5))
+        foreach (var word in _repo.GetWordsOfLength(5))
         {
-            var ijCount = ijre.Matches(word).Count;
-            Assert.That(word.Length, Is.EqualTo(5 + ijCount));    
+            Assert.That(word, Has.Length.EqualTo(5));    
         }
     }
-
-    [GeneratedRegex(".*(ij).*")]
-    private static partial Regex IJRegex();
 }
