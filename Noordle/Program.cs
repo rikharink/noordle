@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<IGameRepository, GameRepository>();
 builder.Services.AddSingleton<IWordlistRepository, WordlistRepository>();
 
 var app = builder.Build();
