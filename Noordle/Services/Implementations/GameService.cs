@@ -23,7 +23,7 @@ public class GameService : IGameService
             words.Add(possibleWords[_random.Next(possibleWords.Count)]);
         }
 
-        var game = new Game(boardCount, words);
+        var game = new Game(wordLength, boardCount, words);
         await _gameRepository.AddOrUpdate(game);
         return new StartGameResponse(game.Id);
     }
@@ -34,6 +34,10 @@ public class GameService : IGameService
         if (game == null)
         {
             throw new InvalidOperationException($"Game with id {gameId} does not exist");
+        }
+        if (guess.Length > game.WordLength)
+        {
+            throw new InvalidOperationException($"Guess is longer than {game.WordLength} characters");
         }
 
         throw new NotImplementedException();
