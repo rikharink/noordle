@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Noordle.Models;
 
 namespace Noordle.Services.Implementations;
@@ -16,7 +17,7 @@ public class GameService : IGameService
 
     public async Task<StartGameResponse> StartGame(int boardCount, int wordLength)
     {
-        var possibleWords = _wordlistRepository.GetWordsOfLength(wordLength);
+        var possibleWords = _wordlistRepository.GetWordsOfLength(wordLength).ToImmutableList();
         var words = new List<string>(boardCount);
         for (var i = 0; i < boardCount; i++)
         {
