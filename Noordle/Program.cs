@@ -1,13 +1,11 @@
-using Noordle.Services;
-using Noordle.Services.Implementations;
+using Noordle.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IGameRepository, GameRepository>();
-builder.Services.AddSingleton<IWordlistRepository, WordlistRepository>();
+builder.Services.RegisterDependencies();
 
 var app = builder.Build();
 

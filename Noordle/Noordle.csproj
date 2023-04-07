@@ -16,6 +16,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="Noordle.Test" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
         <Content Remove="$(SpaRoot)**" />
         <Content Include="..\.dockerignore">
@@ -28,10 +32,6 @@
     <ItemGroup>
       <None Remove="Data\basiswoorden-gekeurd.txt" />
       <EmbeddedResource Include="Data\basiswoorden-gekeurd.txt" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Controllers" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
