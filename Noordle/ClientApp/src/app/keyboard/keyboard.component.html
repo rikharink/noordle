@@ -1,0 +1,11 @@
+<div class="keyboard-wrapper">
+  <div class="keyboard">
+    <div class="key" *ngFor="let key of keys">
+      <div class="hints">
+        <div class="hint" *ngFor="let h of hints"
+             [ngClass]="{'red': h.get(key) === 'red', 'yellow': h.get(key) === 'yellow', 'green': h.get(key) === 'green'}"></div>
+      </div>
+      <span class="key-letter">{{ key }}</span>
+    </div>
+  </div>
+</div>

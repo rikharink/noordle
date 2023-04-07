@@ -1,0 +1,7 @@
+<div class="board">
+  <div class="row" *ngFor="let g of guesses; index as i" [ngClass]="{'active': i === currentAttempt}">
+    <div class="column"
+         [ngClass]="{'green': gl.status === 'green', 'yellow': gl.status === 'yellow', 'red': gl.status === 'red'}"
+         *ngFor="let gl of g">{{ gl.character }}</div>
+  </div>
+</div>

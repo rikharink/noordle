@@ -1,0 +1,27 @@
+.wrapper {
+  height: calc(100% - 126px);
+  overflow-y: auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5em;
+  margin: 0.5em 0;
+}
+
+.boards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.boards-small {
+  max-width: 50%;
+}
+
+.boards-medium {
+  max-width: 70%;
+}

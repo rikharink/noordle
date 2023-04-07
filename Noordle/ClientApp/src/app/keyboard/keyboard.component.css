@@ -1,0 +1,64 @@
+.keyboard-wrapper {
+  width: 100%;
+  height: 126px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  width: calc(42px * 10);
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.key {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--ctp-mocha-rosewater);
+  color: var(--ctp-mocha-base);
+  height: 40px;
+  width: 40px;
+  font-size: 1.2em;
+  font-weight: normal;
+  margin: 1px;
+  background: var(--ctp-mocha-flamingo);
+  position: relative;
+
+}
+
+.key-letter{
+  z-index: 1;
+}
+
+.hints {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.hint {
+  flex-grow: 1;
+}
+
+.red {
+  background: var(--ctp-mocha-red);
+}
+
+.green {
+  background: var(--ctp-mocha-green);
+}
+
+.yellow {
+  background: var(--ctp-mocha-yellow);
+}
