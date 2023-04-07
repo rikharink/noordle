@@ -5,21 +5,31 @@ public class Game
     public int WordLength { get; }
     public Guid Id { get; } = Guid.NewGuid();
     public List<Board> Boards { get; }
+    
+    private int MaxGuesses { get; set; }
+    private int Guesses { get; set; }
 
-    public Game(int wordLength, int boardCount, IReadOnlyCollection<string> words)
+    public Game(IReadOnlyCollection<string> words)
     {
-        if (words.Count > boardCount)
+        var wordLength = words.First().Length;
+        if (words.Any(w => w.Length != wordLength))
         {
-            throw new InvalidOperationException(
-                $"words has length {words.Count} but should be the same length as boardCount {boardCount}");
+            throw new InvalidOperationException("words contains words of different lengths ");
         }
 
         WordLength = wordLength;
-        Boards = words.Select(word => new Board(word, 6 + boardCount - 1)).ToList();
+        var boardCount = words.Count;
+        MaxGuesses = 5 + boardCount;
+        Boards = words.Select(word => new Board(word)).ToList();
     }
 
     public GuessResponse GuessWord(string guess)
     {
+        if (Guesses == MaxGuesses)
+        {
+            throw new InvalidOperationException("Game over!");
+        }
+
         var result = new List<WordMatch?>();
         foreach (var board in Boards)
         {
@@ -27,6 +37,7 @@ public class Game
             result.Add(guessResponse);
         }
 
+        Guesses++;
         return new GuessResponse(true, result.ToArray());
     }
 }

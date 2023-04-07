@@ -13,9 +13,9 @@ public class GameTest
     }; 
      
     [Test] 
-    public void NoordleGame() 
+    public void Game() 
     { 
-        var game = new Game(5, 4, _wordsToGuess); 
+        var game = new Game(_wordsToGuess); 
  
         var result = game.GuessWord("Adieu"); 
          
@@ -30,13 +30,35 @@ public class GameTest
     } 
      
     [Test] 
-    public void NoordleGame_IfWordIsSolved_ThenGuessReturnsNull() 
+    public void Game_IfWordIsSolved_ThenGuessReturnsNull() 
     { 
-        var game = new Game(5, 4, _wordsToGuess); 
+        var game = new Game(_wordsToGuess); 
  
         game.GuessWord("Appel"); 
         var result = game.GuessWord("Adieu"); 
          
         Assert.That(result.Matches[1], Is.Null);
+    }
+    
+    [Test] 
+    public void Game_IfMaxGuessesReached_ThenGameOver() 
+    { 
+        var game = new Game(new []{"Appel"}); 
+ 
+        game.GuessWord("Adieu"); 
+        game.GuessWord("Adieu"); 
+        game.GuessWord("Adieu"); 
+        game.GuessWord("Adieu"); 
+        game.GuessWord("Adieu"); 
+        game.GuessWord("Adieu");
+
+        var ex = Assert.Throws<InvalidOperationException>(() => game.GuessWord("Appel"));
+        Assert.That(ex.Message, Is.EqualTo("Game over!"));
+    }
+    
+    [Test] 
+    public void Game_IfWordsOfDifferentLengths_ThenInvalid()
+    {
+        Assert.Throws<InvalidOperationException>(() => new Game(new[] { "Appel", "Peer", "Banaan" }));
     }
 }

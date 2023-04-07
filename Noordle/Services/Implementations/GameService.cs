@@ -20,13 +20,9 @@ public class GameService : IGameService
     public async Task<StartGameResponse> StartGame(int boardCount, int wordLength)
     {
         possibleWords = _wordlistRepository.GetWordsOfLength(wordLength).ToImmutableList();
-        var words = new List<string>(boardCount);
-        for (var i = 0; i < boardCount; i++)
-        {
-            words.Add(possibleWords[_random.Next(possibleWords.Count)]);
-        }
+        var words = WordSelector.SelectWords(possibleWords, boardCount);
 
-        var game = new Game(wordLength, boardCount, words);
+        var game = new Game(words);
         await _gameRepository.AddOrUpdate(game);
         return new StartGameResponse(game.Id);
     }

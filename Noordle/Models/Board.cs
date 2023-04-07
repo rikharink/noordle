@@ -4,24 +4,17 @@ namespace Noordle.Models;
 
 public class Board
 {
-    public Board(string word, int maxGuesses)
+    public Board(string word)
     {
         Word = word;
-        MaxGuesses = maxGuesses;
     }
-    
-    public string Word { get; }
-    public int MaxGuesses { get; }
-    public int Guesses { get; set; }
-    
-    public bool IsWon { get; set; }
+
+    private string Word { get; }
+
+    private bool IsWon { get; set; }
 
     public WordMatch? Guess(string guess)
     {
-        if (Guesses == MaxGuesses)
-        {
-            throw new InvalidOperationException("Game over!");
-        }
         if (IsWon)
         {
             return null;
@@ -32,8 +25,7 @@ public class Board
         {
             IsWon = true;
         }
-
-        Guesses++;
+        
         return guessResponse;
     }
 }
