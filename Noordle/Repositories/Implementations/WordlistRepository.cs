@@ -8,7 +8,7 @@ public partial class WordlistRepository : IWordlistRepository
 {
     private readonly Dictionary<int, List<string>> _cache = new();
     
-    [GeneratedRegex("[a-z]*")]
+    [GeneratedRegex("^[a-z]*$")]
     private static partial Regex WordRegex();
     
     public WordlistRepository()
