@@ -17,4 +17,16 @@ public class Game
         WordLength = wordLength;
         Boards = words.Select(word => new Board(word, 6 + boardCount - 1)).ToList();
     }
+
+    public GuessResponse GuessWord(string guess)
+    {
+        var result = new List<WordMatch?>();
+        foreach (var board in Boards)
+        {
+            var guessResponse = board.Guess(guess);
+            result.Add(guessResponse);
+        }
+
+        return new GuessResponse(true, result.ToArray());
+    }
 }

@@ -1,3 +1,3 @@
 namespace Noordle.Models;
 
-public record GuessResponse(LetterStatus[] Letters);
+public record GuessResponse(bool IsValid, WordMatch?[] Matches);

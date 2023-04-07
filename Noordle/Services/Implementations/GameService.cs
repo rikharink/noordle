@@ -9,6 +9,8 @@ public class GameService : IGameService
     private readonly IWordlistRepository _wordlistRepository;
     private readonly Random _random = new();
 
+    private ImmutableList<string> possibleWords;
+
     public GameService(IGameRepository gameRepository, IWordlistRepository wordlistRepository)
     {
         _gameRepository = gameRepository;
@@ -17,7 +19,7 @@ public class GameService : IGameService
 
     public async Task<StartGameResponse> StartGame(int boardCount, int wordLength)
     {
-        var possibleWords = _wordlistRepository.GetWordsOfLength(wordLength).ToImmutableList();
+        possibleWords = _wordlistRepository.GetWordsOfLength(wordLength).ToImmutableList();
         var words = new List<string>(boardCount);
         for (var i = 0; i < boardCount; i++)
         {
@@ -41,6 +43,11 @@ public class GameService : IGameService
             throw new InvalidOperationException($"Guess is longer than {game.WordLength} characters");
         }
 
-        throw new NotImplementedException();
+        if (!possibleWords.Contains(guess))
+        {
+            return new GuessResponse(false, Array.Empty<WordMatch>());
+        }
+
+        return game.GuessWord(guess);
     }
 }

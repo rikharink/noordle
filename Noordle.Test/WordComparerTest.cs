@@ -1,4 +1,7 @@
-﻿namespace Noordle.Test;
+﻿using Noordle.Models;
+using Noordle.Services.Implementations;
+
+namespace Noordle.Test;
 
 public class WordComparerTest
 {
@@ -12,8 +15,21 @@ public class WordComparerTest
         var comparison = WordComparer.Compare(word1, word2);
         
         Assert.IsTrue(isMatch);
-        Assert.IsTrue(comparison.All(c => c == "Green"));
+        Assert.IsTrue(comparison.Letters.All(c => c == LetterStatus.Correct));
     }
+    
+    [Test] 
+    public void EqualWords_DifferentCasing() 
+    { 
+        var word1 = "Appel"; 
+        var word2 = "APPEL"; 
+ 
+        var isMatch = WordComparer.IsMatch(word1, word2); 
+        var comparison = WordComparer.Compare(word1, word2); 
+         
+        Assert.IsTrue(isMatch); 
+        Assert.IsTrue(comparison.Letters.All(c => c == LetterStatus.Correct));
+    } 
     
     [Test]
     public void InequalWords()
@@ -25,7 +41,7 @@ public class WordComparerTest
         var comparison = WordComparer.Compare(word1, word2);
         
         Assert.IsFalse(isMatch);
-        Assert.IsTrue(comparison.All(c => c == "Red"));
+        Assert.IsTrue(comparison.Letters.All(c => c == LetterStatus.Incorrect));
     }
     
     [Test]
@@ -38,11 +54,7 @@ public class WordComparerTest
         var comparison = WordComparer.Compare(word1, word2);
 
         Assert.IsFalse(isMatch);
-        Assert.That(comparison[0], Is.EqualTo("Red"));
-        Assert.That(comparison[1], Is.EqualTo("Red"));
-        Assert.That(comparison[2], Is.EqualTo("Yellow"));
-        Assert.That(comparison[3], Is.EqualTo("Red"));
-        Assert.That(comparison[4], Is.EqualTo("Red"));
+        TestHelper.AssertComparison(comparison, LetterStatus.Incorrect, LetterStatus.Incorrect, LetterStatus.IncorrectLocation, LetterStatus.Incorrect, LetterStatus.Incorrect);
     }
     
     [Test]
@@ -55,11 +67,7 @@ public class WordComparerTest
         var comparison = WordComparer.Compare(word1, word2);
 
         Assert.IsFalse(isMatch);
-        Assert.That(comparison[0], Is.EqualTo("Green"));
-        Assert.That(comparison[1], Is.EqualTo("Red"));
-        Assert.That(comparison[2], Is.EqualTo("Red"));
-        Assert.That(comparison[3], Is.EqualTo("Red"));
-        Assert.That(comparison[4], Is.EqualTo("Yellow"));
+        TestHelper.AssertComparison(comparison, LetterStatus.Correct, LetterStatus.Incorrect, LetterStatus.Incorrect, LetterStatus.Incorrect, LetterStatus.IncorrectLocation);
     }
     
     [Test]
@@ -72,11 +80,7 @@ public class WordComparerTest
         var comparison = WordComparer.Compare(word1, word2);
 
         Assert.IsFalse(isMatch);
-        Assert.That(comparison[0], Is.EqualTo("Green"));
-        Assert.That(comparison[1], Is.EqualTo("Yellow"));
-        Assert.That(comparison[2], Is.EqualTo("Red"));
-        Assert.That(comparison[3], Is.EqualTo("Red"));
-        Assert.That(comparison[4], Is.EqualTo("Red"));
+        TestHelper.AssertComparison(comparison, LetterStatus.Correct, LetterStatus.IncorrectLocation, LetterStatus.Incorrect, LetterStatus.Incorrect, LetterStatus.Incorrect);
     }
     
     [Test]
@@ -89,11 +93,7 @@ public class WordComparerTest
         var comparison = WordComparer.Compare(word1, word2);
 
         Assert.IsFalse(isMatch);
-        Assert.That(comparison[0], Is.EqualTo("Yellow"));
-        Assert.That(comparison[1], Is.EqualTo("Yellow"));
-        Assert.That(comparison[2], Is.EqualTo("Yellow"));
-        Assert.That(comparison[3], Is.EqualTo("Red"));
-        Assert.That(comparison[4], Is.EqualTo("Red"));
+        TestHelper.AssertComparison(comparison, LetterStatus.IncorrectLocation, LetterStatus.IncorrectLocation, LetterStatus.IncorrectLocation, LetterStatus.Incorrect, LetterStatus.Incorrect);
     }
     
     [Test]
@@ -106,11 +106,7 @@ public class WordComparerTest
         var comparison = WordComparer.Compare(word1, word2);
 
         Assert.IsFalse(isMatch);
-        Assert.That(comparison[0], Is.EqualTo("Yellow"));
-        Assert.That(comparison[1], Is.EqualTo("Green"));
-        Assert.That(comparison[2], Is.EqualTo("Yellow"));
-        Assert.That(comparison[3], Is.EqualTo("Yellow"));
-        Assert.That(comparison[4], Is.EqualTo("Red"));
+        TestHelper.AssertComparison(comparison, LetterStatus.IncorrectLocation, LetterStatus.Correct, LetterStatus.IncorrectLocation, LetterStatus.IncorrectLocation, LetterStatus.Incorrect);
     }
     
     [Test]
@@ -123,50 +119,6 @@ public class WordComparerTest
         var comparison = WordComparer.Compare(word1, word2);
 
         Assert.IsFalse(isMatch);
-        Assert.That(comparison[0], Is.EqualTo("Yellow")); 
-        Assert.That(comparison[1], Is.EqualTo("Green"));
-        Assert.That(comparison[2], Is.EqualTo("Yellow"));
-        Assert.That(comparison[3], Is.EqualTo("Yellow"));
-        Assert.That(comparison[4], Is.EqualTo("Red"));
-    }
-}
-
-public static class WordComparer
-{
-    public static bool IsMatch(string wordA, string wordB) => wordA == wordB;
-
-    public static List<string> Compare(string word, string guess)
-    {
-        var wordLetters = word.ToLower().ToCharArray();
-        var guessLetters = guess.ToLower().ToCharArray();
-        var matches = new List<string>(guess.Length);
-
-        var matchedLetters = new List<char>();
-
-        for (var i = 0; i < guessLetters.Length; i++)
-        {
-            var guessLetter = guessLetters[i];
-
-            var matchesCount = matchedLetters.Count(l => l == guessLetter);
-            var wordCount = word.ToLower().Count(l => l == guessLetter);
-
-            if (wordLetters[i] == guessLetter)
-            {
-                matches.Add("Green");
-                matchedLetters.Add(guessLetter);
-            }
-            else if (wordLetters.Contains(guessLetter) && (!matchedLetters.Contains(guessLetter) ||
-                                                           matchesCount < wordCount))
-            {
-                matches.Add("Yellow");
-                matchedLetters.Add(guessLetter);
-            }
-            else
-            {
-                matches.Add("Red");
-            }
-        }
-
-        return matches;
+        TestHelper.AssertComparison(comparison, LetterStatus.IncorrectLocation, LetterStatus.Correct, LetterStatus.IncorrectLocation, LetterStatus.IncorrectLocation, LetterStatus.Incorrect);
     }
 }
