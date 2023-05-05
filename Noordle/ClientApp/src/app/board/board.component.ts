@@ -5,7 +5,7 @@ import {GuessService} from "../guess.service";
 export type GuessLetterStatus = 'yellow' | 'red' | 'green' | 'none';
 
 class GuessLetter {
-  public constructor(private guessService: GuessService, character: string = '', status: GuessLetterStatus = 'none') {
+  public constructor(character: string = '', status: GuessLetterStatus = 'none') {
     this.character = character;
     this.status = status;
   }
@@ -20,13 +20,25 @@ class GuessLetter {
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
+  @Input() boardIndex: number = -1;
   @Input() wordLength: number = -1;
   @Input() attempts: number = -1;
-  @Input() currentAttempt: number = -1;
 
+  currentAttempt = 0;
   guesses: GuessLetter[][] = [];
 
-  constructor() {
+  constructor(private guessService: GuessService) {
+    guessService.currentWord.subscribe(word => {
+      if(this.currentAttempt < this.attempts) {
+        this.guesses[this.currentAttempt] = [...word].map(l => new GuessLetter(l));
+      }
+    });
+
+    guessService.nextWord.subscribe(_ => {
+      if(this.currentAttempt < this.attempts){
+        this.currentAttempt++;
+      }
+    })
   }
 
   ngOnInit(): void {

@@ -13,10 +13,10 @@ export class PlayComponent implements OnInit {
   wordLength: number;
   boardNumber: number;
 
-
-  constructor(private router: Router) {
+  constructor(private router: Router, private guessService: GuessService) {
     this.wordLength = router.getCurrentNavigation()?.extras?.state?.wordLength ?? 5;
     this.boardNumber = router.getCurrentNavigation()?.extras?.state?.boardNumber ?? 1;
+    guessService.wordLength = this.wordLength;
   }
 
   ngOnInit(): void {
