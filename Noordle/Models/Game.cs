@@ -36,7 +36,7 @@ public class Game
             var guessResponse = board.Guess(guess);
             result.Add(guessResponse);
         }
-
+       
         Guesses++;
         return new GuessResponse(true, result.ToArray());
     }

@@ -8,8 +8,6 @@ public class GameService : IGameService
     private readonly IGameRepository _gameRepository;
     private readonly IWordlistRepository _wordlistRepository;
 
-    private ImmutableList<string> possibleWords;
-
     public GameService(IGameRepository gameRepository, IWordlistRepository wordlistRepository)
     {
         _gameRepository = gameRepository;
@@ -18,9 +16,8 @@ public class GameService : IGameService
 
     public async Task<StartGameResponse> StartGame(int boardCount, int wordLength)
     {
-        possibleWords = _wordlistRepository.GetWordsOfLength(wordLength).ToImmutableList();
+        var possibleWords = _wordlistRepository.GetWordsOfLength(wordLength).ToImmutableList();
         var words = WordSelector.SelectWords(possibleWords, boardCount);
-
         var game = new Game(words);
         await _gameRepository.AddOrUpdate(game);
         return new StartGameResponse(game.Id);
@@ -33,6 +30,8 @@ public class GameService : IGameService
         {
             throw new InvalidOperationException($"Game with id {gameId} does not exist");
         }
+        
+        var possibleWords = _wordlistRepository.GetWordsOfLength(game.WordLength).ToImmutableList();
         if (guess.Length > game.WordLength)
         {
             throw new InvalidOperationException($"Guess is longer than {game.WordLength} characters");

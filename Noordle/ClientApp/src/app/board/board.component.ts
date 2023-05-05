@@ -1,5 +1,7 @@
 import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {GuessService} from "../guess.service";
+import {GuessResponse} from "../api/models/guess-response";
+import {LetterStatus} from "../api/models/letter-status";
 
 
 export type GuessLetterStatus = 'yellow' | 'red' | 'green' | 'none';
@@ -34,12 +36,33 @@ export class BoardComponent implements OnInit {
       }
     });
 
-    guessService.nextWord.subscribe(_ => {
-      if(this.currentAttempt < this.attempts){
+    guessService.guessResponse.subscribe(response => {
+      const matches= response.matches;
+      if(matches && matches.length > 0) {
+        const myMatches = matches[this.boardIndex];
+        //TODO: handle
+        if(!myMatches.letters) return;
+
+        const currentGuess = this.guesses[this.currentAttempt];
+        myMatches.letters.forEach((status, i) => {
+          switch(status) {
+            case LetterStatus.Correct:
+              currentGuess[i].status = "green";
+              break;
+            case LetterStatus.IncorrectLocation:
+              currentGuess[i].status = "yellow";
+              break;
+            case LetterStatus.Incorrect:
+              currentGuess[i].status = "red";
+              break;
+          }
+        });
         this.currentAttempt++;
       }
-    })
+
+    });
   }
+
 
   ngOnInit(): void {
     for (let i = 0; i < this.attempts; i++) {

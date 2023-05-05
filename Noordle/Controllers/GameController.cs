@@ -5,7 +5,7 @@ using Noordle.Services;
 namespace Noordle.Controllers;
 
 [ApiController]
-[Route("api/app/[controller]")]
+[Route("api/[controller]")]
 public class GameController : ControllerBase
 {
     private readonly IGameService _gameService;
@@ -16,10 +16,9 @@ public class GameController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> StartNewGame([FromBody] StartGameDto dto)
+    public async Task<ActionResult<StartGameResponse>> StartNewGame([FromBody] StartGameDto dto)
     {
         var gameId = await _gameService.StartGame(dto.BoardCount, dto.WordLength);
-
         return Ok(gameId);
     }
 

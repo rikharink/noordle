@@ -1,8 +1,7 @@
-import {ChangeDetectorRef, Component, HostListener, OnInit} from '@angular/core';
-import {Router, NavigationStart} from "@angular/router";
-import {filter} from "rxjs";
-import {BoardComponent} from "../board/board.component";
+import {Component, OnInit} from '@angular/core';
+import {Router} from "@angular/router";
 import {GuessService} from "../guess.service";
+import {GameService} from "../api/services/game.service";
 
 @Component({
   selector: 'app-play',
@@ -10,15 +9,21 @@ import {GuessService} from "../guess.service";
   styleUrls: ['./play.component.css']
 })
 export class PlayComponent implements OnInit {
-  wordLength: number;
-  boardNumber: number;
+  public wordLength: number;
+  public boardNumber: number;
+  private readonly gameId: any;
 
-  constructor(private router: Router, private guessService: GuessService) {
+  constructor(private router: Router, private guessService: GuessService, private gameService: GameService) {
     this.wordLength = router.getCurrentNavigation()?.extras?.state?.wordLength ?? 5;
     this.boardNumber = router.getCurrentNavigation()?.extras?.state?.boardNumber ?? 1;
+    this.gameId = router.getCurrentNavigation()?.extras?.state?.gameId ?? "";
     guessService.wordLength = this.wordLength;
+    guessService.gameId = this.gameId;
   }
 
   ngOnInit(): void {
+    if (this.gameId === "") {
+      this.router.navigate(['/']).catch(e => console.error(e));
+    }
   }
 }
